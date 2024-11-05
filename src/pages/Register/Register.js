@@ -1,8 +1,30 @@
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.svg";
 import  "./Register.module.css";   
+import { useState } from "react";
+import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { auth } from "../../Services/firebaseConfig";
 
 function Register() {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [
+    createUserWithEmailAndPassword,
+    user,
+    loading,
+    error,
+  ] = useCreateUserWithEmailAndPassword(auth);
+
+  function handleSignOut(e) {
+    e.preventDefault();
+    createUserWithEmailAndPassword(email, password);
+  }
+
+  if(loading) {
+    return <p>Carregando...</p>
+  }
   return (
     <div className="container">
       <header className="header">
@@ -17,7 +39,8 @@ function Register() {
                   type="text" 
                   name="email" 
                   id="email" 
-                  placeholder="Digite seu e-mail"/>
+                  placeholder="Digite seu e-mail"
+                  onChange={(e) =>setEmail(e.target.value)}/>
             </div>
     
             <div className="inputContainer">
@@ -26,12 +49,13 @@ function Register() {
                   type="password" 
                   name="password" 
                   id="password" 
-                  placeholder="************"/>
+                  placeholder="************"
+                  onChange={(e) =>setPassword(e.target.value)}/>
             </div>
 
             <a href="">Esqueceu a senha?</a>
 
-            <button className="button">
+            <button className="button" onClick={handleSignOut}>
               Cadastrar
             </button>
 

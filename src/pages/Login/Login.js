@@ -1,9 +1,29 @@
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.svg";
 import  "./Login.module.css";
-import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { auth } from "../../Services/firebaseConfig";
+import { useState } from "react";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [SignInWithEmailAndPassword, user, loading, error] =
+    useSignInWithEmailAndPassword(auth);
+
+  function handleSignIn(e) {
+    e.preventDefault();
+    SignInWithEmailAndPassword(email, password);
+  }
+
+  if(loading) {
+    return <p>Carregando...</p>
+  }
+  if(user) {
+    return console.log(user)
+  }
+
   return (
     <div className="container">
       <header className="header">
@@ -18,7 +38,9 @@ function Login() {
                   type="text" 
                   name="email" 
                   id="email" 
-                  placeholder="Digite seu e-mail"/>
+                  placeholder="Digite seu e-mail"
+                  onChange={(e) =>setEmail(e.target.value)}/>
+                  
             </div>
     
             <div className="inputContainer">
@@ -27,12 +49,14 @@ function Login() {
                   type="password" 
                   name="password" 
                   id="password" 
-                  placeholder="************"/>
+                  placeholder="************"
+                  onChange={(e) =>setPassword(e.target.value)}/>
+                  
             </div>
 
             <a href="">Esqueceu a senha?</a>
 
-            <button className="button">
+            <button className="button" onClick={handleSignIn}>
               Entrar
             </button>
 
